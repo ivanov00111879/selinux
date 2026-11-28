@@ -57,11 +57,12 @@
 [root@selinux audit]# semodule -r nginx
 libsemanage.semanage_direct_remove_key: Removing last nginx module (no other nginx module exists at another priority).
 
-
+```
 2. Обеспечить работоспособность приложения при включенном selinux.
 * развернуть приложенный стенд https://github.com/mbfx/otus-linux-adm/tree/master/selinux_dns_problems;
+```
 ![Скриншот](screen/11.png)
-
+```
 * выяснить причину неработоспособности механизма обновления зоны (см. README);
 Проблема заключается в несоответствии контекста безопасности SELinux для каталога с файлами динамических DNS-зон.
 
@@ -77,10 +78,12 @@ libsemanage.semanage_direct_remove_key: Removing last nginx module (no other ngi
 
 * реализовать выбранное решение и продемонстрировать его работоспособность.
 Подключимся к клиенту и попробуем внести изменения в зону: nsupdate -k /etc/named.zonetransfer.key
+```
 ![Скриншот](screen/12.png)
-
+```
 Изменения внести не получилось. Просмотр логов SELinux, утилитой audit2why результатов не дал.
 Подключимся к серверу ns01 и проверим логи SELinux
+```
 ![Скриншот](screen/13.png)
 
 В логах мы видим, что ошибка в контексте безопасности. Целевой контекст named_conf_t.
@@ -99,8 +102,9 @@ libsemanage.semanage_direct_remove_key: Removing last nginx module (no other ngi
 
 Попробуем снова внести изменения с клиента:
 ![Скриншот](screen/18.png)
-
+```
 Изменения применились.
 Мы не добавили новые правила в политику для назначения этого контекста в каталоге. Значит, что при перемаркировке файлов контекст вернётся на тот, который прописан в файле политики.
 Для того, чтобы вернуть правила обратно, можно выполнить команду: restorecon -v -R /etc/named
+```
 ![Скриншот](screen/19.png)
